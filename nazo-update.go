@@ -6,7 +6,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
 type DiscordLogin struct {
@@ -57,7 +56,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	msg := m.Content
 
-	if strings.Contains(msg, "nazoupdate") {
+	if msg == "nazoupdate" {
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
 	}
