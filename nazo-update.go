@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
+	"strings"
 )
 
 type DiscordLogin struct {
@@ -45,20 +48,34 @@ func main() {
 		os.Exit(1)
 	}
 
+	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+		msg := r.URL.Query().Get("msg")
+		if id != "" && msg != "" {
+			dg.ChannelMessageSend(id, "Message from HTTP chat endpoint: \n`"+msg+"`")
+			fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
+		}
+	})
+
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 	// Simple way to keep program running until CTRL-C is pressed.
+	log.Fatal(http.ListenAndServe(":8080", nil))
 	<-make(chan struct{})
 	return
-
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	msg := strings.Split(m.Content, " ")
 
-	msg := m.Content
-
-	if msg == "nazoupdate" {
+	switch msg[0] {
+	case "nazoupdate":
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
+		break
+	case "deltaspeak":
+		s.ChannelMessageDelete(m.ChannelID, m.ID)
+		s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+		break
 	}
 
 }
