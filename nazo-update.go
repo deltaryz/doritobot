@@ -18,16 +18,19 @@ type DiscordLogin struct {
 	Password string `json:"password"`
 }
 
+// These need to be global
 var cb *cleverbot.Session
 var botErr error
 
 func main() {
+	// Read the login.json
 	loginFile, fileErr := ioutil.ReadFile("./login.json")
 	if fileErr != nil {
 		fmt.Println(fileErr.Error())
 		os.Exit(1)
 	}
 
+	// Parse it
 	var login DiscordLogin
 	jsonErr := json.Unmarshal(loginFile, &login)
 
@@ -36,6 +39,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Log in to discord 
 	dg, err := discordgo.New(login.Username, login.Password)
 
 	if err != nil {
@@ -45,6 +49,7 @@ func main() {
 		fmt.Println("Successfully logged in as " + login.Username)
 	}
 
+	// Message received handler
 	dg.AddHandler(messageCreate)
 
 	err = dg.Open()
@@ -53,11 +58,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Open cleverbot API
 	cb, botErr = cleverbot.New("JHowZe3ddT6Da0JU","8NSK1vZVH1lRNMIcTbu4hU6kGEyIDxsW","")
 	if botErr != nil {
 		log.Fatal(botErr)
 	} 
 
+	// HTTP endpoint handler
 	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		msg := r.URL.Query().Get("msg")
@@ -68,7 +75,6 @@ func main() {
 	})
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	// Simple way to keep program running until CTRL-C is pressed.
 	log.Fatal(http.ListenAndServe(":8080", nil))
 	<-make(chan struct{})
 	return
