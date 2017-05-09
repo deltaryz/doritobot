@@ -92,9 +92,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if botErr2 != nil {
 			log.Fatal(botErr2)
 		}
-
-		s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n" + response)
-
+		s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n`" + response+"`")
 		break
 	}
 }
