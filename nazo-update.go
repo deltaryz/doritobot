@@ -9,12 +9,17 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"github.com/CleverbotIO/go-cleverbot.io"
 )
 
+// DiscordLogin is a simple struct which contains a username and password for a Discord login
 type DiscordLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+var cb *cleverbot.Session
+var botErr error
 
 func main() {
 	loginFile, fileErr := ioutil.ReadFile("./login.json")
@@ -48,6 +53,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	cb, botErr = cleverbot.New("JHowZe3ddT6Da0JU","8NSK1vZVH1lRNMIcTbu4hU6kGEyIDxsW","")
+	if botErr != nil {
+		log.Fatal(botErr)
+	} 
+
 	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		msg := r.URL.Query().Get("msg")
@@ -64,18 +74,27 @@ func main() {
 	return
 }
 
+// messageCreate is the handler function for all incoming Discord messages
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	msg := strings.Split(m.Content, " ")
 
 	switch msg[0] {
-	case "nazoupdate":
+	case "nazoupdate": // Reminds everyone that Nazo is adorable
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
 		break
-	case "deltaspeak":
+	case "deltaspeak": // Echoes the given text from my own user account
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
 		break
-	}
+	case "cb": // Communicates with Cleverbot.
+		response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
+		if botErr2 != nil {
+			log.Fatal(botErr2)
+		}
 
+		s.ChannelMessageSend(m.ChannelID, "Cleverbot says: " + response)
+
+		break
+	}
 }
