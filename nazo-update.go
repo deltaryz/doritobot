@@ -21,12 +21,14 @@ func randomRange(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
-// DiscordLogin is a simple struct which contains a username and password for a Discord login
-type DiscordLogin struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Bot      bool   `json:"Bot"`
-	BotToken string `json:"botToken"`
+// Config is a json file containing the login data and any user-configurable values
+type Config struct {
+	Username            string `json:"username"`
+	Password            string `json:"password"`
+	Bot                 bool   `json:"Bot"`
+	BotToken            string `json:"botToken"`
+	HTTPEndpointEnabled bool   `json:"httpEndpointEnabled"`
+	EchoCommandEnabled  bool   `json:"echoCommandEnabled"`
 }
 
 // DerpiResults is a struct to contain Derpibooru search results
@@ -81,17 +83,17 @@ var currentID string
 var userIDError error
 var dg *discordgo.Session
 var err error
+var login Config
 
 func main() {
-	// Read the login.json
-	loginFile, fileErr := ioutil.ReadFile("./login.json")
+	// Read the config.json
+	loginFile, fileErr := ioutil.ReadFile("./config.json")
 	if fileErr != nil {
 		fmt.Println(fileErr.Error())
 		os.Exit(1)
 	}
 
 	// Parse it
-	var login DiscordLogin
 	jsonErr := json.Unmarshal(loginFile, &login)
 
 	if jsonErr != nil {
@@ -147,7 +149,9 @@ func main() {
 	}
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if login.HTTPEndpointEnabled {
+		log.Fatal(http.ListenAndServe(":8080", nil))
+	}
 	<-make(chan struct{})
 	return
 }
@@ -156,6 +160,7 @@ func main() {
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var msg []string
 	if m.Author.Username == "PonyChat" {
+		// this is disabled since my implementation was SHIT
 		//msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
 	} else {
 		msg = strings.Split(m.Content, " ")
@@ -168,12 +173,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
 			break
 		case "echo": // Echoes the given text
-			s.ChannelMessageDelete(m.ChannelID, m.ID)
-			/*if m.Author.Username == "PonyChat" {
-				s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
-			} else {*/
-			s.ChannelMessageSend(m.ChannelID, "`echo:`\n"+m.Content[11:len(m.Content)])
-			//}
+			if login.EchoCommandEnabled {
+				s.ChannelMessageDelete(m.ChannelID, m.ID)
+				/*if m.Author.Username == "PonyChat" {
+					s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
+				} else {*/
+				s.ChannelMessageSend(m.ChannelID, "`echo:`\n"+m.Content[11:len(m.Content)])
+				//}
+			}
 			break
 		case "cb": // Communicates with Cleverbot.
 			response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
