@@ -136,7 +136,14 @@ func main() {
 
 // messageCreate is the handler function for all incoming Discord messages
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	msg := strings.Split(m.Content, " ")
+	var msg []string
+	if m.Author.Username == "PonyChat" {
+		msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
+	} else {
+		msg = strings.Split(m.Content, " ")
+	}
+
+	fmt.Println(msg)
 
 	switch msg[0] {
 	case "nazoupdate": // Reminds everyone that Nazo is adorable
@@ -145,7 +152,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		break
 	case "deltaspeak": // Echoes the given text from my own user account
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
-		s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+		if m.Author.Username == "PonyChat" {
+			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+		}
 		break
 	case "cb": // Communicates with Cleverbot.
 		response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
