@@ -138,7 +138,7 @@ func main() {
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var msg []string
 	if m.Author.Username == "PonyChat" {
-		msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
+		//msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
 	} else {
 		msg = strings.Split(m.Content, " ")
 	}
@@ -152,11 +152,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		break
 	case "deltaspeak": // Echoes the given text from my own user account
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
-		if m.Author.Username == "PonyChat" {
+		/*if m.Author.Username == "PonyChat" {
 			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
-		}
+		} else {*/
+		s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+		//}
 		break
 	case "cb": // Communicates with Cleverbot.
 		response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
