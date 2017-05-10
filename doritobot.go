@@ -262,7 +262,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "h")
 			}
 			break
-		case "pvfmservers":
+		case "pvfmservers": // Gives a list of all available PVFM streams (direct links)
 			pvfmResp, pvfmErr := http.Get("http://dj.bronyradio.com:7090/status-json.xsl")
 			if pvfmErr != nil {
 				s.ChannelMessageSend(m.ChannelID, "Error receiving station metadata")
