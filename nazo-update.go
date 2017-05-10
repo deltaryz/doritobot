@@ -143,58 +143,58 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		msg = strings.Split(m.Content, " ")
 	}
 
-	fmt.Println(msg)
-
-	switch msg[0] {
-	case "nazoupdate": // Reminds everyone that Nazo is adorable
-		s.ChannelMessageDelete(m.ChannelID, m.ID)
-		s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
-		break
-	case "deltaspeak": // Echoes the given text from my own user account
-		s.ChannelMessageDelete(m.ChannelID, m.ID)
-		/*if m.Author.Username == "PonyChat" {
-			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
-		} else {*/
-		s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
-		//}
-		break
-	case "cb": // Communicates with Cleverbot.
-		response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
-		if botErr2 != nil {
-			log.Fatal(botErr2)
-		}
-		s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n`"+response+"`")
-		break
-	case "db": // Grabs an image from Derpibooru results with a given list of tags - always a safe image!
-		if len(msg) < 2 {
-			s.ChannelMessageSend(m.ChannelID, "Error: not enough arguments")
+	if len(msg) > 0 {
+		switch msg[0] {
+		case "nazoupdate": // Reminds everyone that Nazo is adorable
+			s.ChannelMessageDelete(m.ChannelID, m.ID)
+			s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
+			break
+		case "deltaspeak": // Echoes the given text from my own user account
+			s.ChannelMessageDelete(m.ChannelID, m.ID)
+			/*if m.Author.Username == "PonyChat" {
+				s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
+			} else {*/
+			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+			//}
+			break
+		case "cb": // Communicates with Cleverbot.
+			response, botErr2 := cb.Ask(m.Content[2:len(m.Content)])
+			if botErr2 != nil {
+				log.Fatal(botErr2)
+			}
+			s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n`"+response+"`")
+			break
+		case "db": // Grabs an image from Derpibooru results with a given list of tags - always a safe image!
+			if len(msg) < 2 {
+				s.ChannelMessageSend(m.ChannelID, "Error: not enough arguments")
+				break
+			}
+			derpiTags := strings.Replace(m.Content[3:len(m.Content)], " ", "+", -1)
+			resp, derpiHTTPErr := http.Get("https://derpibooru.org/search.json?q=safe," + derpiTags)
+			if derpiHTTPErr != nil {
+				s.ChannelMessageSend(m.ChannelID, "HTTP error, check console")
+				log.Fatal(derpiHTTPErr)
+				break
+			}
+			defer resp.Body.Close()
+			derpiBody, derpiErr := ioutil.ReadAll(resp.Body)
+			var derpiErr2 error
+			results := DerpiResults{}
+			derpiErr2 = json.Unmarshal(derpiBody, &results)
+			if derpiErr != nil {
+				s.ChannelMessageSend(m.ChannelID, "Error reading HTTP response")
+				break
+			}
+			if derpiErr2 != nil {
+				s.ChannelMessageSend(m.ChannelID, "Error reading derpibooru API response")
+				break
+			}
+			if len(results.Search) > 0 {
+				s.ChannelMessageSend(m.ChannelID, "http:"+results.Search[randomRange(0, len(results.Search))].Image)
+			} else {
+				s.ChannelMessageSend(m.ChannelID, "Error: no results")
+			}
 			break
 		}
-		derpiTags := strings.Replace(m.Content[3:len(m.Content)], " ", "+", -1)
-		resp, derpiHTTPErr := http.Get("https://derpibooru.org/search.json?q=safe," + derpiTags)
-		if derpiHTTPErr != nil {
-			s.ChannelMessageSend(m.ChannelID, "HTTP error, check console")
-			log.Fatal(derpiHTTPErr)
-			break
-		}
-		defer resp.Body.Close()
-		derpiBody, derpiErr := ioutil.ReadAll(resp.Body)
-		var derpiErr2 error
-		results := DerpiResults{}
-		derpiErr2 = json.Unmarshal(derpiBody, &results)
-		if derpiErr != nil {
-			s.ChannelMessageSend(m.ChannelID, "Error reading HTTP response")
-			break
-		}
-		if derpiErr2 != nil {
-			s.ChannelMessageSend(m.ChannelID, "Error reading derpibooru API response")
-			break
-		}
-		if len(results.Search) > 0 {
-			s.ChannelMessageSend(m.ChannelID, "http:"+results.Search[randomRange(0, len(results.Search))].Image)
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "Error: no results")
-		}
-		break
 	}
 }
