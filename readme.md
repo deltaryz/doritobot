@@ -8,6 +8,7 @@ Commands:
 * `cb`: Cleverbot.IO API integration; forwards the given message to Cleverbot and posts his response
 * `db`: Make a Derpibooru search query with the given tags and post a random image result.
 * `h`: Responds with "h".
+* `pvfmservers`: Lists the various PVFM streams with direct source links.
 
 The `config.json` file contains the login data and various other properties you may wish to adjust. An example json is included in the repo.
 
