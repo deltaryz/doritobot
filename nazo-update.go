@@ -195,6 +195,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "Error: no results")
 			}
 			break
+		case "h": // h
+			s.ChannelMessageSend(m.ChannelID, "h")
+			break
 		}
 	}
 }
