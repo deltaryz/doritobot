@@ -290,6 +290,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				outputString += "- " + element.ServerDescription + ": " + strings.Replace(element.Listenurl, "aerial", "dj.bronyradio.com", -1) + "\n"
 			}
 
+			outputString += "\nDJ Recordings: http://darkling.darkwizards.com/wang/BronyRadio/?M=D"
+
 			s.ChannelMessageSend(m.ChannelID, outputString)
 
 			break
