@@ -25,6 +25,8 @@ func randomRange(min, max int) int {
 type DiscordLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Bot      bool   `json:"Bot"`
+	BotToken string `json:"botToken"`
 }
 
 // DerpiResults is a struct to contain Derpibooru search results
@@ -77,6 +79,8 @@ var cb *cleverbot.Session
 var botErr error
 var currentID string
 var userIDError error
+var dg *discordgo.Session
+var err error
 
 func main() {
 	// Read the login.json
@@ -96,13 +100,17 @@ func main() {
 	}
 
 	// Log in to discord
-	dg, err := discordgo.New(login.Username, login.Password)
+	if login.Bot {
+		dg, err = discordgo.New("Bot " + login.BotToken)
+	} else {
+		dg, err = discordgo.New(login.Username, login.Password)
+	}
 
 	if err != nil {
 		fmt.Println("Error creating session: ", err)
 		os.Exit(1)
 	} else {
-		fmt.Println("Successfully logged in as " + login.Username)
+		fmt.Println("Successfully logged in.")
 	}
 
 	// Message received handler
@@ -115,6 +123,7 @@ func main() {
 	}
 
 	// Open cleverbot API
+	// TODO: move this to login.json
 	cb, botErr = cleverbot.New("JHowZe3ddT6Da0JU", "8NSK1vZVH1lRNMIcTbu4hU6kGEyIDxsW", "")
 	if botErr != nil {
 		log.Fatal(botErr)
@@ -158,12 +167,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageDelete(m.ChannelID, m.ID)
 			s.ChannelMessageSend(m.ChannelID, "This is your daily reminder that <@!165846085020024832> is adorable.")
 			break
-		case "deltaspeak": // Echoes the given text from my own user account
+		case "echo": // Echoes the given text
 			s.ChannelMessageDelete(m.ChannelID, m.ID)
 			/*if m.Author.Username == "PonyChat" {
 				s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
 			} else {*/
-			s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[11:len(m.Content)])
+			s.ChannelMessageSend(m.ChannelID, "`echo:`\n"+m.Content[11:len(m.Content)])
 			//}
 			break
 		case "cb": // Communicates with Cleverbot.

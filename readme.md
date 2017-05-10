@@ -1,10 +1,10 @@
-# nazo-update
+# doritobot
 
 Discord bot software written in Golang which implements several commands, most of them utterly useless.
 
 Commands:
 * `nazoupdate`: Reminds the channel that Nazo is adorable (the original command!)
-* `deltaspeak`: Causes the bot to echo the given text, prepended with `ds:`
+* `echo`: Causes the bot to echo the given text, prepended with `echo:`
 * `cb`: Cleverbot.IO API integration; forwards the given message to Cleverbot and posts his response
 * `db`: Make a Derpibooru search query with the given tags and post a random image result.
 
