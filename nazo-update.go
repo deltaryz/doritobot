@@ -3,19 +3,73 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
+	"time"
+
 	"github.com/CleverbotIO/go-cleverbot.io"
+	"github.com/bwmarrin/discordgo"
 )
+
+// randomRange gives a random whole integer between the given integers [min, max)
+func randomRange(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max-min) + min
+}
 
 // DiscordLogin is a simple struct which contains a username and password for a Discord login
 type DiscordLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+// DerpiResults is a struct to contain Derpibooru search results
+type DerpiResults struct {
+	Search []struct {
+		ID               string        `json:"id"`
+		CreatedAt        time.Time     `json:"created_at"`
+		UpdatedAt        time.Time     `json:"updated_at"`
+		DuplicateReports []interface{} `json:"duplicate_reports"`
+		FirstSeenAt      time.Time     `json:"first_seen_at"`
+		UploaderID       string        `json:"uploader_id"`
+		Score            int           `json:"score"`
+		CommentCount     int           `json:"comment_count"`
+		Width            int           `json:"width"`
+		Height           int           `json:"height"`
+		FileName         string        `json:"file_name"`
+		Description      string        `json:"description"`
+		Uploader         string        `json:"uploader"`
+		Image            string        `json:"image"`
+		Upvotes          int           `json:"upvotes"`
+		Downvotes        int           `json:"downvotes"`
+		Faves            int           `json:"faves"`
+		Tags             string        `json:"tags"`
+		TagIds           []string      `json:"tag_ids"`
+		AspectRatio      float64       `json:"aspect_ratio"`
+		OriginalFormat   string        `json:"original_format"`
+		MimeType         string        `json:"mime_type"`
+		Sha512Hash       string        `json:"sha512_hash"`
+		OrigSha512Hash   string        `json:"orig_sha512_hash"`
+		SourceURL        string        `json:"source_url"`
+		Representations  struct {
+			ThumbTiny  string `json:"thumb_tiny"`
+			ThumbSmall string `json:"thumb_small"`
+			Thumb      string `json:"thumb"`
+			Small      string `json:"small"`
+			Medium     string `json:"medium"`
+			Large      string `json:"large"`
+			Tall       string `json:"tall"`
+			Full       string `json:"full"`
+		} `json:"representations"`
+		IsRendered  bool `json:"is_rendered"`
+		IsOptimized bool `json:"is_optimized"`
+	} `json:"search"`
+	Total        int           `json:"total"`
+	Interactions []interface{} `json:"interactions"`
 }
 
 // These need to be global
@@ -39,7 +93,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Log in to discord 
+	// Log in to discord
 	dg, err := discordgo.New(login.Username, login.Password)
 
 	if err != nil {
@@ -59,10 +113,10 @@ func main() {
 	}
 
 	// Open cleverbot API
-	cb, botErr = cleverbot.New("JHowZe3ddT6Da0JU","8NSK1vZVH1lRNMIcTbu4hU6kGEyIDxsW","")
+	cb, botErr = cleverbot.New("JHowZe3ddT6Da0JU", "8NSK1vZVH1lRNMIcTbu4hU6kGEyIDxsW", "")
 	if botErr != nil {
 		log.Fatal(botErr)
-	} 
+	}
 
 	// HTTP endpoint handler
 	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +152,38 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if botErr2 != nil {
 			log.Fatal(botErr2)
 		}
-		s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n`" + response+"`")
+		s.ChannelMessageSend(m.ChannelID, "Cleverbot says:\n`"+response+"`")
+		break
+	case "db": // Grabs an image from Derpibooru results with a given list of tags - always a safe image!
+		if len(msg) < 2 {
+			s.ChannelMessageSend(m.ChannelID, "Error: not enough arguments")
+			break
+		}
+		derpiTags := strings.Replace(m.Content[3:len(m.Content)], " ", "+", -1)
+		resp, derpiHTTPErr := http.Get("https://derpibooru.org/search.json?q=safe," + derpiTags)
+		if derpiHTTPErr != nil {
+			s.ChannelMessageSend(m.ChannelID, "HTTP error, check console")
+			log.Fatal(derpiHTTPErr)
+			break
+		}
+		defer resp.Body.Close()
+		derpiBody, derpiErr := ioutil.ReadAll(resp.Body)
+		var derpiErr2 error
+		results := DerpiResults{}
+		derpiErr2 = json.Unmarshal(derpiBody, &results)
+		if derpiErr != nil {
+			s.ChannelMessageSend(m.ChannelID, "Error reading HTTP response")
+			break
+		}
+		if derpiErr2 != nil {
+			s.ChannelMessageSend(m.ChannelID, "Error reading derpibooru API response")
+			break
+		}
+		if len(results.Search) > 0 {
+			s.ChannelMessageSend(m.ChannelID, "http:"+results.Search[randomRange(0, len(results.Search))].Image)
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "Error: no results")
+		}
 		break
 	}
 }
