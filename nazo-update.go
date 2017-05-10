@@ -75,6 +75,8 @@ type DerpiResults struct {
 // These need to be global
 var cb *cleverbot.Session
 var botErr error
+var currentID string
+var userIDError error
 
 func main() {
 	// Read the login.json
@@ -127,6 +129,13 @@ func main() {
 			fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
 		}
 	})
+
+	dgUser, userIDError := dg.User("@me")
+	currentID = dgUser.ID
+
+	if userIDError != nil {
+		log.Fatal(userIDError)
+	}
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -196,7 +205,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			break
 		case "h": // h
-			s.ChannelMessageSend(m.ChannelID, "h")
+			if m.Author.ID != currentID {
+				s.ChannelMessageSend(m.ChannelID, "h")
+			}
 			break
 		}
 	}
