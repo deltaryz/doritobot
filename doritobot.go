@@ -14,6 +14,7 @@ import (
 	"github.com/CleverbotIO/go-cleverbot.io"
 	"github.com/PonyvilleFM/aura/pvfm/station"
 	"github.com/bwmarrin/discordgo"
+	"github.com/techniponi/doritobot/gitupdate"
 )
 
 // randomRange gives a random whole integer between the given integers [min, max)
@@ -134,12 +135,27 @@ func main() {
 
 	// HTTP endpoint handler
 	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
-		id := r.URL.Query().Get("id")
-		msg := r.URL.Query().Get("msg")
-		if id != "" && msg != "" {
-			dg.ChannelMessageSend(id, "Message from HTTP chat endpoint: \n`"+msg+"`")
-			fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
+		if login.HTTPEndpointEnabled {
+			id := r.URL.Query().Get("id")
+			msg := r.URL.Query().Get("msg")
+			if id != "" && msg != "" {
+				dg.ChannelMessageSend(id, "Message from HTTP chat endpoint: \n`"+msg+"`")
+				fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
+			}
 		}
+	})
+
+	http.HandleFunc("/repoupdate", func(w http.ResponseWriter, r *http.Request) {
+		decoder := json.NewDecoder(req.Body)
+		var update gitupdate.GitUpdate
+		err := decoder.Decode(&update)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer req.Body.Close()
+		updateString := "New commit pushed to https://github.com/techniponi/doritobot/ :\n" + update.HeadCommit.Author.Name + ": " + update.HeadCommit.Message
+
+		dg.ChannelMessageSend("298642620849324035", updateString)
 	})
 
 	dgUser, userIDError := dg.User("@me")
@@ -150,9 +166,7 @@ func main() {
 	}
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	if login.HTTPEndpointEnabled {
-		log.Fatal(http.ListenAndServe(":8080", nil))
-	}
+	log.Fatal(http.ListenAndServe(":8080", nil))
 	<-make(chan struct{})
 	return
 }
