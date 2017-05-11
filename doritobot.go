@@ -230,6 +230,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			currentMeta, metaErr := station.GetStats()
 			if metaErr != nil {
 				s.ChannelMessageSend(m.ChannelID, "Error receiving pvfm metadata")
+				break
 			}
 
 			outputString := "**PVFM Servers:**\n"
