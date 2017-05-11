@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/CleverbotIO/go-cleverbot.io"
+	"github.com/PonyvilleFM/aura/pvfm/station"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -29,43 +30,6 @@ type Config struct {
 	BotToken            string `json:"botToken"`
 	HTTPEndpointEnabled bool   `json:"httpEndpointEnabled"`
 	EchoCommandEnabled  bool   `json:"echoCommandEnabled"`
-}
-
-// PvfmMeta is a json file with the current metadata for PonyfilleFM's servers
-type PvfmMeta struct {
-	Icestats struct {
-		Admin              string `json:"admin"`
-		Host               string `json:"host"`
-		Location           string `json:"location"`
-		ServerID           string `json:"server_id"`
-		ServerStart        string `json:"server_start"`
-		ServerStartIso8601 string `json:"server_start_iso8601"`
-		Source             []struct {
-			Artist             string      `json:"artist,omitempty"`
-			AudioBitrate       int         `json:"audio_bitrate,omitempty"`
-			AudioChannels      int         `json:"audio_channels,omitempty"`
-			AudioInfo          string      `json:"audio_info"`
-			AudioSamplerate    int         `json:"audio_samplerate,omitempty"`
-			Channels           int         `json:"channels"`
-			Genre              string      `json:"genre"`
-			IceBitrate         int         `json:"ice-bitrate,omitempty"`
-			ListenerPeak       int         `json:"listener_peak"`
-			Listeners          int         `json:"listeners"`
-			Listenurl          string      `json:"listenurl"`
-			Quality            string      `json:"quality,omitempty"`
-			Samplerate         int         `json:"samplerate"`
-			ServerDescription  string      `json:"server_description"`
-			ServerName         string      `json:"server_name"`
-			ServerType         string      `json:"server_type"`
-			ServerURL          string      `json:"server_url"`
-			StreamStart        string      `json:"stream_start"`
-			StreamStartIso8601 string      `json:"stream_start_iso8601"`
-			Subtype            string      `json:"subtype,omitempty"`
-			Title              string      `json:"title"`
-			Dummy              interface{} `json:"dummy"`
-			Bitrate            int         `json:"bitrate,omitempty"`
-		} `json:"source"`
-	} `json:"icestats"`
 }
 
 // DerpiResults is a struct to contain Derpibooru search results
@@ -263,34 +227,18 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			break
 		case "pvfmservers": // Gives a list of all available PVFM streams (direct links)
-			pvfmResp, pvfmErr := http.Get("http://dj.bronyradio.com:7090/status-json.xsl")
-			if pvfmErr != nil {
-				s.ChannelMessageSend(m.ChannelID, "Error receiving station metadata")
-				break
-			}
-			defer pvfmResp.Body.Close()
-
-			pvfmContent, pvfmContentErr := ioutil.ReadAll(pvfmResp.Body)
-			if pvfmContentErr != nil {
-				s.ChannelMessageSend(m.ChannelID, "Error parsing metadata response")
-				break
+			currentMeta, metaErr := station.GetStats()
+			if metaErr != nil {
+				s.ChannelMessageSend(m.ChannelID, "Error receiving pvfm metadata")
 			}
 
-			currentMeta := PvfmMeta{}
-
-			pvfmJSONErr := json.Unmarshal(pvfmContent, &currentMeta)
-			if pvfmJSONErr != nil {
-				s.ChannelMessageSend(m.ChannelID, "Error in json unmarshal")
-				break
-			}
-
-			outputString := "PVFM Servers:\n"
+			outputString := "**PVFM Servers:**\n"
 
 			for _, element := range currentMeta.Icestats.Source {
-				outputString += "- " + element.ServerDescription + ": " + strings.Replace(element.Listenurl, "aerial", "dj.bronyradio.com", -1) + "\n"
+				outputString += ":musical_note: " + element.ServerDescription + ":\n`" + strings.Replace(element.Listenurl, "aerial", "dj.bronyradio.com", -1) + "`\n"
 			}
 
-			outputString += "\nDJ Recordings: http://darkling.darkwizards.com/wang/BronyRadio/?M=D"
+			outputString += "\n:cd: DJ Recordings:\n`http://darkling.darkwizards.com/wang/BronyRadio/?M=D`"
 
 			s.ChannelMessageSend(m.ChannelID, outputString)
 
