@@ -2,6 +2,8 @@
 
 Discord bot software written in Golang which implements several commands, most of them utterly useless.
 
+[![Build Status](https://travis-ci.org/techniponi/doritobot.svg?branch=master)](https://travis-ci.org/techniponi/doritobot)
+
 Commands:
 * `nazoupdate`: Reminds the channel that Nazo is adorable (the original command!)
 * `echo`: Causes the bot to echo the given text, prepended with `echo:`
