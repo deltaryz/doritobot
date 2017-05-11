@@ -146,7 +146,6 @@ func main() {
 	})
 
 	http.HandleFunc("/repoupdate", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Body)
 		decoder := json.NewDecoder(r.Body)
 		var update gitupdate.GitUpdate
 		err := decoder.Decode(&update)
@@ -154,7 +153,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer r.Body.Close()
-		updateString := "New commit pushed to https://github.com/techniponi/doritobot/ :\n" + update.HeadCommit.Author.Name + ": " + update.HeadCommit.Message
+		updateString := "New commit pushed to <https://github.com/techniponi/doritobot> (" + update.HeadCommit.ID + "):\n" + update.HeadCommit.Author.Name + ": " + update.HeadCommit.Message + "\n" + update.HeadCommit.URL
 
 		dg.ChannelMessageSend("298642620849324035", updateString)
 	})
