@@ -146,6 +146,7 @@ func main() {
 	})
 
 	http.HandleFunc("/repoupdate", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.Body)
 		decoder := json.NewDecoder(r.Body)
 		var update gitupdate.GitUpdate
 		err := decoder.Decode(&update)
