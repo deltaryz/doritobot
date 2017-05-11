@@ -6,10 +6,12 @@ Discord bot software written in Golang which implements several commands, most o
 
 Commands:
 * `nazoupdate`: Reminds the channel that Nazo is adorable (the original command!)
-* `echo`: Causes the bot to echo the given text, prepended with `echo:`
+* `echo`: Causes the bot to echo the given text, prepended with `echo:` (this can be disabled!)
 * `cb`: Cleverbot.IO API integration; forwards the given message to Cleverbot and posts his response
 * `db`: Make a Derpibooru search query with the given tags and post a random image result.
 * `h`: Responds with "h".
+
+There are also several [PonyvilleFM](http://ponyvillefm.com) related commands, these are tested on doritobot before being ported to PVFM's [aura](https://github.com/PonyvilleFM/aura).
 * `pvfmservers`: Lists the various PVFM streams with direct source links.
 
 The `config.json` file contains the login data and various other properties you may wish to adjust. An example json is included in the repo.
