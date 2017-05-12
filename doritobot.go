@@ -173,6 +173,7 @@ func main() {
 
 		dg.ChannelMessageSend("298642620849324035", updateString+"\n\nUpdating now...")
 
+		// automatically update bot
 		updateErr := updateBot("298642620849324035", dg)
 		if updateErr != nil {
 			log.Fatal(updateErr)
