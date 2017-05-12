@@ -11,7 +11,7 @@ Commands:
 * `db`: Make a Derpibooru search query with the given tags and post a random image result.
 * `h`: Responds with "h".
 * `techgore`: Posts a random image from [/r/techsupportgore](http://reddit.com/r/techsupportgore)
-* `snuggle`, `cuddle`, `hug`, `kiss`, `boop` (and others...): Interact with any member of the Snuggle Trinity!
+* `snuggle`, `cuddle`, `hug`, `kiss`, `boop` (and others...): Interact with any member of the Snuggle Trinity (or their husbandos)!
 * `gay`: Summon an adorable picture of certain ponies.
 
 There are also several [PonyvilleFM](http://ponyvillefm.com) related commands, these are tested on doritobot before being ported to PVFM's [aura](https://github.com/PonyvilleFM/aura).
