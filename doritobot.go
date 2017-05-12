@@ -291,7 +291,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"shining": "Shiny",
 				"shiny":   "Shiny",
 				"quartz":  "quartz",
-				"dyed":    "
+				"dyed":    "quartz",
 			}
 			possibleResponses := []string{
 				"\"ees\" softly.",
