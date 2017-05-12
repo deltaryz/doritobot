@@ -284,6 +284,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"nazo":    "Jac",
 				"nuzzles": "Jac",
 				"jac":     "Jac",
+				"thorax":  "Thorax",
+				"shining": "Shiny",
+				"shiny":   "Shiny",
 			}
 			possibleResponses := []string{
 				"\"ees\" softly.",
