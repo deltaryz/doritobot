@@ -18,9 +18,12 @@ import (
 	"github.com/techniponi/doritobot/gitupdate"
 )
 
+func init() {
+	rand.Seed(time.Now().Unix())
+}
+
 // randomRange gives a random whole integer between the given integers [min, max)
 func randomRange(min, max int) int {
-	rand.Seed(time.Now().Unix())
 	return rand.Intn(max-min) + min
 }
 
@@ -302,11 +305,24 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"wasn't expecting that! :heart:",
 				"loves you.",
 			}
+			characterSpecifics := map[string][]string{
+				"Thorax": {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
+				"Shiny":  {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
+				"Delta":  {"gets a wingboner.", "vibrates."},
+				"Jac":    {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
+				"Twisty": {"invites you to his next gig.", "needed that! :heart:"},
+			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
 				break
 			}
-			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+possibleResponses[randomRange(0, len(possibleResponses))])
+			finalMessage := "error" // set to error as default in case of derpage
+			if randomRange(0, 10) == 7 {
+				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
+			} else {
+				finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+			}
+			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+finalMessage)
 
 			break
 		case "gay":
