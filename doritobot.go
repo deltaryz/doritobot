@@ -278,6 +278,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
 				break
 			}
+			if msg[1] == "Kappa" {
+				s.ChannelMessageSend(m.ChannelID, "https://floof.zone/img/kappagay.png")
+				break
+			}
 			names := map[string]string{
 				"awal":    "Twisty",
 				"twisty":  "Twisty",
