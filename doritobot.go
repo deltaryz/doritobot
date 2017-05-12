@@ -14,6 +14,7 @@ import (
 	"github.com/CleverbotIO/go-cleverbot.io"
 	"github.com/PonyvilleFM/aura/pvfm/station"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jzelinskie/geddit"
 	"github.com/techniponi/doritobot/gitupdate"
 )
 
@@ -257,6 +258,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			s.ChannelMessageSend(m.ChannelID, outputString)
 
+			break
+		case "techgore":
+			listOptions := geddit.ListingOptions{
+				Limit: 50,
+			}
+			reddit := geddit.NewSession("discordbot")
+			results, err := reddit.SubredditSubmissions("techsupportgore", geddit.NewSubmissions, listOptions)
+			if err != nil {
+				break
+			}
+			s.ChannelMessageSend(m.ChannelID, results[randomRange(0, len(results))].URL)
 			break
 		}
 	}
