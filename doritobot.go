@@ -320,7 +320,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Delta":   {"gets a wingboner.", "vibrates."},
 				"Jac":     {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
 				"Twisty":  {"invites you to his next gig.", "needed that! :heart:"},
-				"Quartz":  {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle"},
+				"Quartz":  {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
 				"Rhombus": {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 			}
 			if names[msg[1]] == "" {
