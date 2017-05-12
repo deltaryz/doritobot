@@ -278,6 +278,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
 				break
 			}
+			if msg[1] == "Kappa" {
+				s.ChannelMessageSend(m.ChannelID, "https://floof.zone/img/kappagay.png")
+				break
+			}
 			names := map[string]string{
 				"awal":    "Twisty",
 				"twisty":  "Twisty",
@@ -292,6 +296,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"shiny":   "Shiny",
 				"quartz":  "Quartz",
 				"dyed":    "Quartz",
+				"rhomb":   "Rhombus",
+				"rhombus": "Rhombus",
+				"rhomby":  "Rhombus",
 			}
 			possibleResponses := []string{
 				"\"ees\" softly.",
@@ -308,30 +315,32 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"loves you.",
 			}
 			characterSpecifics := map[string][]string{
-				"Thorax": {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
-				"Shiny":  {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
-				"Delta":  {"gets a wingboner.", "vibrates."},
-				"Jac":    {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
-				"Twisty": {"invites you to his next gig.", "needed that! :heart:"},
-				"Quartz": {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle"},
+				"Thorax":  {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
+				"Shiny":   {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
+				"Delta":   {"gets a wingboner.", "vibrates."},
+				"Jac":     {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
+				"Twisty":  {"invites you to his next gig.", "needed that! :heart:"},
+				"Quartz":  {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle"},
+				"Rhombus": {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
 				break
 			}
 			finalMessage := "error" // set to error as default in case of derpage
-			
+
 			if names[msg[1]] == "Quartz" {
 				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))]
-				break
-			}
-			
-			if randomRange(0, 10) == 7 {
-				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
 			} else {
-				finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+
+				if randomRange(0, 10) == 7 {
+					finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
+				} else {
+					finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+				}
+
 			}
-			
+
 			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+finalMessage)
 
 			break
