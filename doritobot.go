@@ -306,6 +306,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+possibleResponses[randomRange(0, len(possibleResponses))])
 
 			break
+		case "gay":
+			possibleResponses := []string{
+				"floof.zone/img/gay.jpg",
+				"floof.zone/img/nazoblep.png",
+				"floof.zone/img/awalblep.png",
+				"floof.zone/img/floofbat-capall.png",
+			}
+			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
+			break
 		}
 	}
 }
