@@ -13,6 +13,7 @@ Commands:
 * `techgore`: Posts a random image from [/r/techsupportgore](http://reddit.com/r/techsupportgore)
 * `snuggle`, `cuddle`, `hug`, `kiss`, `boop` (and others...): Interact with any member of the Snuggle Trinity (or their husbandos)!
 * `gay`: Summon an adorable picture of certain ponies.
+* `botupdate`: Automatically update the bot from git and exit (run the bot with the included script to make sure it restarts!)
 
 There are also several [PonyvilleFM](http://ponyvillefm.com) related commands, these are tested on doritobot before being ported to PVFM's [aura](https://github.com/PonyvilleFM/aura).
 * `pvfmservers`: Lists the various PVFM streams with direct source links.
