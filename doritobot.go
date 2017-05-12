@@ -290,6 +290,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"thorax":  "Thorax",
 				"shining": "Shiny",
 				"shiny":   "Shiny",
+				"rhomb":   "Rhombus",
+				"rhombus": "Rhombus",
+				"rhomby":  "Rhombus",
 			}
 			possibleResponses := []string{
 				"\"ees\" softly.",
@@ -311,6 +314,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Delta":  {"gets a wingboner.", "vibrates."},
 				"Jac":    {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
 				"Twisty": {"invites you to his next gig.", "needed that! :heart:"},
+				"Rhombus":{"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
