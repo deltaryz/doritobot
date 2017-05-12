@@ -270,6 +270,28 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			s.ChannelMessageSend(m.ChannelID, results[randomRange(0, len(results))].URL)
 			break
+		case "snuggle", "cuddle", "hug", "kiss", "boop":
+			if len(msg) < 2 {
+				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
+				break
+			}
+			names := map[string]string{
+				"awal":    "Twisty",
+				"twisty":  "Twisty",
+				"delta":   "Delta",
+				"dorito":  "Dorito",
+				"nazo":    "Jac",
+				"nuzzles": "Jac",
+				"jac":     "Jac",
+			}
+			possibleResponses := []string{"\"ees\" softly.", "snuggles back.", "flops over.", "blushes profusely.", "twitches his ears and smiles."}
+			if names[msg[1]] == "" {
+				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
+				break
+			}
+			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+possibleResponses[randomRange(0, len(possibleResponses))])
+
+			break
 		}
 	}
 }
