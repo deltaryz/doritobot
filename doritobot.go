@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -351,6 +352,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"floof.zone/img/floofbat-capall.png",
 			}
 			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
+			break
+		case "botupdate":
+			cmd := exec.Command("/bin/bash", "-c", "cd ~/go/src/github.com/techniponi/doritobot/; git pull; go install; cd ~/go/bin")
+			stdout, err := cmd.Output()
+			if err != nil {
+				log.Fatal(err)
+				break
+			}
+			s.ChannelMessageSend(m.ChannelID, string(stdout))
+			os.Exit(0)
 			break
 		}
 	}
