@@ -296,7 +296,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"shiny":   "Shiny",
 				"quartz":  "Quartz",
 				"dyed":    "Quartz",
-        "rhomb":   "Rhombus",
+        			"rhomb":   "Rhombus",
 				"rhombus": "Rhombus",
 				"rhomby":  "Rhombus",
 			}
