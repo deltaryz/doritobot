@@ -28,6 +28,17 @@ func randomRange(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
+func updateBot(m string, s *discordgo.Session) error {
+	cmd := exec.Command("/bin/bash", "-c", "cd ~/go/src/github.com/techniponi/doritobot/; git pull; go install; cd ~/go/bin")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	s.ChannelMessageSend(m, string(stdout))
+	os.Exit(0)
+	return nil
+}
+
 // Config is a json file containing the login data and any user-configurable values
 type Config struct {
 	Username            string `json:"username"`
@@ -160,7 +171,12 @@ func main() {
 		defer r.Body.Close()
 		updateString := "New commit pushed to <https://github.com/techniponi/doritobot> (" + update.HeadCommit.ID + "):\n" + update.HeadCommit.Author.Name + ": " + update.HeadCommit.Message + "\n" + update.HeadCommit.URL
 
-		dg.ChannelMessageSend("298642620849324035", updateString)
+		dg.ChannelMessageSend("298642620849324035", updateString+"\n\nUpdating now...")
+
+		updateErr := updateBot("298642620849324035", dg)
+		if updateErr != nil {
+			log.Fatal(updateErr)
+		}
 	})
 
 	dgUser, userIDError := dg.User("@me")
@@ -354,14 +370,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
 			break
 		case "botupdate":
-			cmd := exec.Command("/bin/bash", "-c", "cd ~/go/src/github.com/techniponi/doritobot/; git pull; go install; cd ~/go/bin")
-			stdout, err := cmd.Output()
+			err := updateBot(m.ChannelID, s)
 			if err != nil {
 				log.Fatal(err)
 				break
 			}
-			s.ChannelMessageSend(m.ChannelID, string(stdout))
-			os.Exit(0)
 			break
 		}
 	}
