@@ -363,7 +363,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			break
 		case "gay":
 			possibleResponses := []string{
-				"floof.zone/img/gay.jpg",
+				"floof.zone/img/gaybats.png",
 				"floof.zone/img/nazoblep.png",
 				"floof.zone/img/awalblep.png",
 				"floof.zone/img/floofbat-capall.png",
