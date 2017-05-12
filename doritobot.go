@@ -331,13 +331,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if names[msg[1]] == "Quartz" {
 				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))]
-				break
-			}
-
-			if randomRange(0, 10) == 7 {
-				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
 			} else {
-				finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+
+				if randomRange(0, 10) == 7 {
+					finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
+				} else {
+					finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+				}
+
 			}
 
 			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+finalMessage)
