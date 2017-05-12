@@ -301,7 +301,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"rhomby":  "Rhombus",
 			}
 			possibleResponses := []string{
-				"\"ees\" softly.",
 				"snuggles back.",
 				"flops over.",
 				"blushes profusely.",
