@@ -200,7 +200,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// this is disabled since my implementation was SHIT
 		//msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
 	} else {
-		msg = strings.Split(m.Content, " ")
+		msg = strings.Split(strings.ToLower(m.Content), " ")
 	}
 
 	if len(msg) > 0 {
@@ -317,9 +317,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"rhomb":   "Rhombus",
 				"rhombus": "Rhombus",
 				"rhomby":  "Rhombus",
-				"icebear":  "Ice Bear",
-				"ice":  "Ice Bear",
-				"bear":  "Ice Bear",
+				"icebear": "Ice Bear",
+				"ice":     "Ice Bear",
+				"bear":    "Ice Bear",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
@@ -335,13 +335,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"loves you. :heart:",
 			}
 			characterSpecifics := map[string][]string{
-				"Thorax":  {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
-				"Shiny":   {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
-				"Delta":   {"gets a wingboner.", "vibrates."},
-				"Jac":     {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
-				"Twisty":  {"invites you to his next gig.", "needed that! :heart:"},
-				"Quartz":  {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
-				"Rhombus": {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
+				"Thorax":   {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
+				"Shiny":    {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
+				"Delta":    {"gets a wingboner.", "vibrates."},
+				"Jac":      {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
+				"Twisty":   {"invites you to his next gig.", "needed that! :heart:"},
+				"Quartz":   {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
+				"Rhombus":  {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in...fridge...", "will lick your cheeks."},
 			}
 			if names[msg[1]] == "" {
