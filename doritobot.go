@@ -317,19 +317,22 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"rhomb":   "Rhombus",
 				"rhombus": "Rhombus",
 				"rhomby":  "Rhombus",
+				"icebear":  "Ice Bear",
+				"ice":  "Ice Bear",
+				"bear":  "Ice Bear",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
 				"flops over.",
 				"blushes profusely.",
-				"twitches his ears and smiles.",
+				"twitches ears and smiles.",
 				"smiles lovingly.",
 				"boops you back!",
 				"glomps you!",
 				"is happy.",
 				"jumps with joy!",
 				"wasn't expecting that! :heart:",
-				"loves you.",
+				"loves you. :heart:",
 			}
 			characterSpecifics := map[string][]string{
 				"Thorax":  {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
@@ -339,6 +342,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Twisty":  {"invites you to his next gig.", "needed that! :heart:"},
 				"Quartz":  {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
 				"Rhombus": {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
+				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in...fridge...", "will lick your cheeks."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
