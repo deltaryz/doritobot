@@ -371,6 +371,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"floof.zone/img/nazoblep.png",
 				"floof.zone/img/awalblep.png",
 				"floof.zone/img/floofbat-capall.png",
+				"http://pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
 			}
 			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
 			break
