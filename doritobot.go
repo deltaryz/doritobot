@@ -198,12 +198,7 @@ func main() {
 // messageCreate is the handler function for all incoming Discord messages
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var msg []string
-	if m.Author.Username == "PonyChat" {
-		// this is disabled since my implementation was SHIT
-		//msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
-	} else {
-		msg = strings.Split(strings.ToLower(m.Content), " ")
-	}
+	msg = strings.Split(strings.ToLower(m.Content), " ")
 
 	if len(msg) > 0 {
 		switch msg[0] {
@@ -214,11 +209,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		case "echo": // Echoes the given text
 			if login.EchoCommandEnabled {
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
-				/*if m.Author.Username == "PonyChat" {
-					s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
-				} else {*/
 				s.ChannelMessageSend(m.ChannelID, "`echo:`\n"+m.Content[11:len(m.Content)])
-				//}
 			}
 			break
 		case "cb": // Communicates with Cleverbot.
@@ -347,7 +338,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Quartz":   {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
 				"Rhombus":  {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in... fridge...", "will lick your cheeks."},
-				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane."},
+				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane.", "rubs his claws through your mane."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
