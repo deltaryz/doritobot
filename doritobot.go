@@ -320,6 +320,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"icebear": "Ice Bear",
 				"ice":     "Ice Bear",
 				"bear":    "Ice Bear",
+				"carson":  "Dragon",
+				"dragon":  "Dragon",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
@@ -342,7 +344,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Twisty":   {"invites you to his next gig.", "needed that! :heart:"},
 				"Quartz":   {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
 				"Rhombus":  {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
-				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in...fridge...", "will lick your cheeks."},
+				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in... fridge...", "will lick your cheeks."},
+				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
@@ -350,7 +353,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			finalMessage := "error" // set to error as default in case of derpage
 
-			if names[msg[1]] == "Quartz" {
+			if names[msg[1]] == "Quartz" || names[msg[1]] == "Dragon" {
 				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))]
 			} else {
 
@@ -367,13 +370,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			break
 		case "gay":
 			possibleResponses := []string{
-				"floof.zone/img/gaybats.png",
-				"floof.zone/img/nazoblep.png",
-				"floof.zone/img/awalblep.png",
-				"floof.zone/img/floofbat-capall.png",
+				"https://floof.zone/img/gaybats.png",
+				"https://floof.zone/img/nazoblep.png",
+				"https://floof.zone/img/awalblep.png",
+				"https://floof.zone/img/floofbat-capall.png",
 				"http://pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
 			}
-			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
+			s.ChannelMessageSend(m.ChannelID, possibleResponses[randomRange(0, len(possibleResponses))])
 			break
 		case "botupdate":
 			err := updateBot(m.ChannelID, s)
