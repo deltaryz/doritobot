@@ -133,6 +133,8 @@ func main() {
 		fmt.Println("Successfully logged in.")
 	}
 
+	dg.ChannelMessageSend("298642620849324035", "Doritobot initialized.")
+
 	// Message received handler
 	dg.AddHandler(messageCreate)
 
