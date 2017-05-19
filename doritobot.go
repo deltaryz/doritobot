@@ -273,7 +273,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			s.ChannelMessageSend(m.ChannelID, results[randomRange(0, len(results))].URL)
 			break
-		case "snuggle", "cuddle", "hug", "kiss", "boop", "glomp", "nuzzle":
+		case "snuggle", "cuddle", "hug", "kiss", "boop", "glomp", "nuzzle", "huggle":
 			if len(msg) < 2 {
 				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
 				break
@@ -342,7 +342,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"floof.zone/img/nazoblep.png",
 				"floof.zone/img/awalblep.png",
 				"floof.zone/img/floofbat-capall.png",
-				"http://pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
+				"pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
 			}
 			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
 			break
