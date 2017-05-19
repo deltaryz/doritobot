@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -25,6 +26,17 @@ func init() {
 // randomRange gives a random whole integer between the given integers [min, max)
 func randomRange(min, max int) int {
 	return rand.Intn(max-min) + min
+}
+
+func updateBot(m string, s *discordgo.Session) error {
+	cmd := exec.Command("/bin/bash", "-c", "cd ~/go/src/github.com/techniponi/doritobot/; git pull; go install; cd ~/go/bin")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	s.ChannelMessageSend(m, string(stdout))
+	os.Exit(0)
+	return nil
 }
 
 // Config is a json file containing the login data and any user-configurable values
@@ -121,6 +133,8 @@ func main() {
 		fmt.Println("Successfully logged in.")
 	}
 
+	dg.ChannelMessageSend("298642620849324035", "Doritobot initialized.")
+
 	// Message received handler
 	dg.AddHandler(messageCreate)
 
@@ -159,7 +173,13 @@ func main() {
 		defer r.Body.Close()
 		updateString := "New commit pushed to <https://github.com/techniponi/doritobot> (" + update.HeadCommit.ID + "):\n" + update.HeadCommit.Author.Name + ": " + update.HeadCommit.Message + "\n" + update.HeadCommit.URL
 
-		dg.ChannelMessageSend("298642620849324035", updateString)
+		dg.ChannelMessageSend("298642620849324035", updateString+"\n\nUpdating now...")
+
+		// automatically update bot
+		updateErr := updateBot("298642620849324035", dg)
+		if updateErr != nil {
+			log.Fatal(updateErr)
+		}
 	})
 
 	dgUser, userIDError := dg.User("@me")
@@ -178,12 +198,7 @@ func main() {
 // messageCreate is the handler function for all incoming Discord messages
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var msg []string
-	if m.Author.Username == "PonyChat" {
-		// this is disabled since my implementation was SHIT
-		//msg = strings.Split(m.Content[strings.Index(m.Content, ">")+4:len(m.Content)], " ")
-	} else {
-		msg = strings.Split(m.Content, " ")
-	}
+	msg = strings.Split(strings.ToLower(m.Content), " ")
 
 	if len(msg) > 0 {
 		switch msg[0] {
@@ -194,11 +209,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		case "echo": // Echoes the given text
 			if login.EchoCommandEnabled {
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
-				/*if m.Author.Username == "PonyChat" {
-					s.ChannelMessageSend(m.ChannelID, "`ds:` "+m.Content[15:len(m.Content)])
-				} else {*/
 				s.ChannelMessageSend(m.ChannelID, "`echo:`\n"+m.Content[11:len(m.Content)])
-				//}
 			}
 			break
 		case "cb": // Communicates with Cleverbot.
@@ -278,7 +289,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
 				break
 			}
-			if msg[1] == "Kappa" {
+			if msg[1] == "kappa" {
 				s.ChannelMessageSend(m.ChannelID, "https://floof.zone/img/kappagay.png")
 				break
 			}
@@ -296,55 +307,76 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"shiny":   "Shiny",
 				"quartz":  "Quartz",
 				"dyed":    "Quartz",
-        			"rhomb":   "Rhombus",
+				"rhomb":   "Rhombus",
 				"rhombus": "Rhombus",
 				"rhomby":  "Rhombus",
+				"icebear": "Ice Bear",
+				"ice":     "Ice Bear",
+				"bear":    "Ice Bear",
+				"carson":  "Dragon",
+				"dragon":  "Dragon",
 			}
 			possibleResponses := []string{
-				"\"ees\" softly.",
 				"snuggles back.",
 				"flops over.",
 				"blushes profusely.",
-				"twitches his ears and smiles.",
+				"twitches ears and smiles.",
 				"smiles lovingly.",
 				"boops you back!",
 				"glomps you!",
 				"is happy.",
 				"jumps with joy!",
 				"wasn't expecting that! :heart:",
-				"loves you.",
+				"loves you. :heart:",
 			}
 			characterSpecifics := map[string][]string{
-				"Thorax": {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
-				"Shiny":  {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
-				"Delta":  {"gets a wingboner.", "vibrates."},
-				"Jac":    {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
-				"Twisty": {"invites you to his next gig.", "needed that! :heart:"},
-				"Quartz": {"runs away.", "did not like that."},
-				"Rhombus": {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
+				"Thorax":   {"vibrates his wings in excitement.", "is cheered up from your kindness!"},
+				"Shiny":    {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
+				"Delta":    {"gets a wingboner.", "vibrates."},
+				"Jac":      {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
+				"Twisty":   {"invites you to his next gig.", "needed that! :heart:"},
+				"Quartz":   {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
+				"Rhombus":  {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
+				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in... fridge...", "will lick your cheeks."},
+				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane.", "rubs his claws through your mane."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
 				break
 			}
 			finalMessage := "error" // set to error as default in case of derpage
-			if randomRange(0, 10) == 7 {
-				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
+
+			if names[msg[1]] == "Quartz" || names[msg[1]] == "Dragon" {
+				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))]
 			} else {
-				finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+
+				if randomRange(0, 10) == 7 {
+					finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))] // this line is a fucking mess
+				} else {
+					finalMessage = possibleResponses[randomRange(0, len(possibleResponses))]
+				}
+
 			}
+
 			s.ChannelMessageSend(m.ChannelID, names[msg[1]]+" "+finalMessage)
 
 			break
 		case "gay":
 			possibleResponses := []string{
-				"floof.zone/img/gay.jpg",
-				"floof.zone/img/nazoblep.png",
-				"floof.zone/img/awalblep.png",
-				"floof.zone/img/floofbat-capall.png",
-				"pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
+				"https://floof.zone/img/gaybats.png",
+				"https://floof.zone/img/nazoblep.png",
+				"https://floof.zone/img/awalblep.png",
+				"https://floof.zone/img/floofbat-capall.png",
+				"http://pre10.deviantart.net/8d84/th/pre/f/2017/071/3/6/synth_wave_commission_by_pinktonicponystudio-db23tga.png",
 			}
-			s.ChannelMessageSend(m.ChannelID, "http://"+possibleResponses[randomRange(0, len(possibleResponses))])
+			s.ChannelMessageSend(m.ChannelID, possibleResponses[randomRange(0, len(possibleResponses))])
+			break
+		case "botupdate":
+			err := updateBot(m.ChannelID, s)
+			if err != nil {
+				log.Fatal(err)
+				break
+			}
 			break
 		}
 	}
