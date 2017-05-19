@@ -284,7 +284,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			s.ChannelMessageSend(m.ChannelID, results[randomRange(0, len(results))].URL)
 			break
-		case "snuggle", "cuddle", "hug", "kiss", "boop", "glomp", "nuzzle":
+		case "snuggle", "cuddle", "hug", "kiss", "boop", "glomp", "nuzzle", "huggle":
 			if len(msg) < 2 {
 				s.ChannelMessageSend(m.ChannelID, "Who - Delta, Twisty, or Jac?")
 				break
