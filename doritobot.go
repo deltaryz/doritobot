@@ -316,6 +316,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"carson":  "Dragon",
 				"dragon":  "Dragon",	
 				"woona":   "Woona",
+				"spike":   "Spike",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
@@ -341,6 +342,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in... fridge...", "will lick your cheeks."},
 				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane.", "rubs his claws through your mane."},
 				"Woona":    {"gives you her Cartographer's Cap.", "squees happily! <:customemote:315306330384629760>"},
+				"Spike":    {"nibbles your snoot.", "growls adorably.", "holds you tightly."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
