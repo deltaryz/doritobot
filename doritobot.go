@@ -315,8 +315,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"bear":    "Ice Bear",
 				"carson":  "Dragon",
 				"dragon":  "Dragon",	
+				"fidelity": "Fidelity:,
 				"woona":   "Woona",
 				"spike":   "Spike",
+				"rod": "Rod",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
@@ -336,13 +338,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"Shiny":    {"wonders if Cadance is okay with this.", "thinks you would be a great addition to the Sparkle family."},
 				"Delta":    {"gets a wingboner.", "vibrates."},
 				"Jac":      {"dies of cuteness overload.", "passes out from an extreme overdose of gay.", "can't hold all these husbandos."},
-				"Twisty":   {"invites you to his next gig.", "needed that! :heart:"},
+				"Twisty":   {"invites you to his next gig.", "needed that! :heart:", "eees"},
 				"Quartz":   {"runs away.", "did not like that.", "dyes inside.", "cries.", "is anti-snuggle."},
 				"Rhombus":  {"giggles like a giddy schoolfilly.", "squeals happily.", "floofs his wings."},
 				"Ice Bear": {"doesn't hate your butt.", "has a conspiracy theory.", "has respect. Keep real.", "...sleeps in... fridge...", "will lick your cheeks."},
-				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane.", "rubs his claws through your mane."},
+				"Dragon":   {"licks you sensually.", "closes his jaw around your head.", "picks you up and holds you like a toy.", "thinks you have a pretty mane.", "rubs his claws through your mane.", "noms on your snout.",  "noms on a part of your body~.", "curls up around you.", "warms you up.", "hides you under their wings.", "takes you to their lair.", "picks you up and cradles you like a little baby.", 'loudly shouts "Pony".', "goes all crosseyed.", "sits on you."},
 				"Woona":    {"gives you her Cartographer's Cap.", "squees happily! <:customemote:315306330384629760>"},
 				"Spike":    {"nibbles your snoot.", "growls adorably.", "holds you tightly."},
+				"Fidelity": {"is too sexy for you.", "pats you lightly on the shoulder." "isn't gay, sorry faggot.", "tries to control their greed."},
 			}
 			if names[msg[1]] == "" {
 				s.ChannelMessageSend(m.ChannelID, "I'm afraid I don't know who that is. :c")
@@ -350,7 +353,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			finalMessage := "error" // set to error as default in case of derpage
 
-			if names[msg[1]] == "Quartz" || names[msg[1]] == "Dragon" {
+			if names[msg[1]] == "Quartz" || names[msg[1]] == "Dragon" || names[msg[1]] == "Fidelity" {
 				finalMessage = characterSpecifics[names[msg[1]]][randomRange(0, len(characterSpecifics[names[msg[1]]]))]
 			} else {
 
