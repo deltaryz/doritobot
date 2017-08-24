@@ -318,6 +318,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				"fidelity": "Fidelity:,
 				"woona":   "Woona",
 				"spike":   "Spike",
+				"rod": "Rod",
 			}
 			possibleResponses := []string{
 				"snuggles back.",
