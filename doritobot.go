@@ -162,8 +162,13 @@ func main() {
 				fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
 			}
 			if receiveChat == "true" {
-				fmt.Fprintf("#gay")
-				fmt.Fprintf(w, dg.ChannelMessages("298642620849324035", 5))
+				msgs, msgsErr := dg.ChannelMessages("298642620849324035", 5)
+				if msgsErr != nil {
+					fmt.Fprintf(w, "Error retrieving messages:\n" +msgsErr)
+				}else{
+					fmt.Fprintf(w, "#gay")
+					fmt.Fprintf(w, msgs)
+				}
 			}
 		}
 	})
