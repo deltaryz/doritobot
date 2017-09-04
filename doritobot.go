@@ -160,7 +160,9 @@ func main() {
 			if id != "" && msg != "" {
 				dg.ChannelMessageSend(id, "Message from HTTP chat endpoint: \n`"+msg+"`")
 				fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
-			}else if receiveChat == "true"{
+			}
+			if receiveChat == "true" {
+				fmt.Fprintf("#gay")
 				fmt.Fprintf(w, dg.ChannelMessages("298642620849324035", 5))
 			}
 		}
