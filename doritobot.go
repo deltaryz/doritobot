@@ -39,6 +39,30 @@ func updateBot(m string, s *discordgo.Session) error {
 	return nil
 }
 
+// Discord message response struct for HTTP endpoint
+type Tmp []struct {
+	Attachments     []interface{} `json:"attachments"`
+	Tts             bool          `json:"tts"`
+	Embeds          []interface{} `json:"embeds"`
+	Timestamp       time.Time     `json:"timestamp"`
+	MentionEveryone bool          `json:"mention_everyone"`
+	ID              string        `json:"id"`
+	Pinned          bool          `json:"pinned"`
+	EditedTimestamp interface{}   `json:"edited_timestamp"`
+	Author          struct {
+		Username      string `json:"username"`
+		Discriminator string `json:"discriminator"`
+		Bot           bool   `json:"bot"`
+		ID            string `json:"id"`
+		Avatar        string `json:"avatar"`
+	} `json:"author"`
+	MentionRoles []interface{} `json:"mention_roles"`
+	Content      string        `json:"content"`
+	ChannelID    string        `json:"channel_id"`
+	Mentions     []interface{} `json:"mentions"`
+	Type         int           `json:"type"`
+}
+
 // Config is a json file containing the login data and any user-configurable values
 type Config struct {
 	Username            string `json:"username"`
@@ -162,18 +186,30 @@ func main() {
 				fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
 			}
 			if receiveChat == "true" {
-				channelObj, chObjErr := dg.Channel("298642620849324035")
-				if chObjErr != nil {
-					fmt.Fprintf(w, "Error receiving channel object. :c")
-				} else {
-					msgs, msgsErr := dg.ChannelMessages("298642620849324035", int(5), channelObj.LastMessageID, channelObj.LastMessageID)
-					if msgsErr != nil {
-						fmt.Fprintf(w, "Error retrieving messages. :c")
-					}else{
-						fmt.Fprintf(w, "#gay")
-						fmt.Fprintf(w, msgs[1].Content)
-					}
+				chatClient := &http.Client{}
+
+				req, reqErr := http.NewRequest("GET", "https://discordapp.com/api/v6/channels/298642620849324035/messages?limit=5", nil)
+				if reqErr != nil {
+					// bleh
 				}
+				req.Header.Add("Authorization", "Bot " + login.BotToken)
+				resp, respErr := chatClient.Do(req)
+				if respErr != nil {
+					// bleh
+				}
+				defer resp.Body.Close()
+
+				tmp := Tmp{}
+				json.NewDecoder(resp.Body).Decode(&tmp)
+
+				respString := "" // string to send to client
+
+				for _, element := range tmp {
+					tempString := element.Author.Username + ": " + element.Content + "\n" + respString
+					respString = tempString
+				}
+
+				fmt.Fprintf(w, "#gay\n" + respString)
 			}
 		}
 	})
