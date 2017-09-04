@@ -156,9 +156,12 @@ func main() {
 		if login.HTTPEndpointEnabled {
 			id := r.URL.Query().Get("id")
 			msg := r.URL.Query().Get("msg")
+			receiveChat := r.URL.Query().Get("receiveChat")
 			if id != "" && msg != "" {
 				dg.ChannelMessageSend(id, "Message from HTTP chat endpoint: \n`"+msg+"`")
 				fmt.Fprintf(w, "You are sending: \n"+msg+"\nto channel ID: \n"+id)
+			}else if receiveChat == "true"{
+				fmt.Fprintf(w, dg.ChannelMessages("298642620849324035", 5))
 			}
 		}
 	})
