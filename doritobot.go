@@ -188,7 +188,7 @@ func main() {
 			if receiveChat == "true" {
 				chatClient := &http.Client{}
 
-				req, reqErr := http.NewRequest("GET", "https://discordapp.com/api/v6/channels/298642620849324035/messages?limit=5", nil)
+				req, reqErr := http.NewRequest("GET", "https://discordapp.com/api/v6/channels/298642620849324035/messages?limit=10", nil)
 				if reqErr != nil {
 					// bleh
 				}
