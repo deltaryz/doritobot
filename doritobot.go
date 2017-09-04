@@ -188,7 +188,10 @@ func main() {
 			if receiveChat == "true" {
 				chatClient := &http.Client{}
 
-				req, reqErr := http.NewRequest("GET", "https://discordapp.com/api/v6/channels/298642620849324035/messages?limit=10", nil)
+				limitSize := r.URL.Query().Get("limit")
+				channelID := r.URL.Query().Get("chid")
+
+				req, reqErr := http.NewRequest("GET", "https://discordapp.com/api/v6/channels/" + channelID + "/messages?limit=" + limitSize, nil)
 				if reqErr != nil {
 					// bleh
 				}
@@ -209,7 +212,13 @@ func main() {
 					respString = tempString
 				}
 
-				fmt.Fprintf(w, "#gay\n" + respString)
+				chanName, chanErr := dg.Channel(channelID)
+
+				if chanErr != nil {
+					// bleh
+				}
+
+				fmt.Fprintf(w, "#" + chanName.Name + "\n\n" + respString)
 			}
 		}
 	})
